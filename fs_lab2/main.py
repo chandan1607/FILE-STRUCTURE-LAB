@@ -1,222 +1,102 @@
+class Student:
+    def __init__(self, name=None, usn=None, branch=None, sem=None):
+        self.n = name
+        self.u = usn
+        self.b = branch
+        self.s = sem
 
-array = []
+    def pack(self):
+        str = ""
+        str = str + self.n + "|" + self.u + "|" + self.b + "|" + self.s + "|"
+        while len(str) != 30:
+            str = str + "*"
+        f = open("students.txt", "a")
+        str+="\n"
+        f.write(str)
+        print(str)
+        f.close()
 
-class student:
-    def __init__(self, usn, name, sem, branch):
-        self.usn = usn
-        self.name = name
-        self.sem = sem
-        self.branch = branch
+    def unpack(self):
+        fi = open("students.txt", "r")
+        line = fi.readline()
+        a = line.split("|")
+        while line:
+            name = a[0]
+            usn = a[1]
+            branch = a[2]
+            sem = a[3]
+            print("Name:", name)
+            print("USN:", usn)
+            print("Branch: ", branch)
+            print("SEM: ", sem)
+            line = fi.readline()
+            a = line.split("|")
+        fi.close()
 
+    def search(self, USNtosearch):
 
-    def pack(self,file):
-        record = self.usn+"|"+self.name+"|"+self.sem+"|"+self.branch+"|"
+        fi = open("students.txt", "r+")
+        pos = fi.tell()
+        line = fi.readline()
 
-        if len(record) > 45:
-            print("Exceeded")
-        while len(record) <46:
-            record += "#"
-        record += "\n"
+        a = line.split("|")
+        while line:
+            name = a[0]
+            usn = a[1]
+            branch = a[2]
+            sem = a[3]
+            if usn == USNtosearch:
+                print("Name:", name)
+                print("USN:", usn)
+                print("Branch: ", branch)
+                print("SEM: ", sem)
+                print("If You Want to Modify Enter yes ")
+                n = input()
+                if n == "yes":
+                    fi.seek(pos)
+                    na = input("Which Field Do You Want to Modify? \n1.Name\n2.USN\n3.Branch\n4.SEM\n")
+                    if na == "1":
+                        name = input("Enter Name")
+                    elif na == "2":
+                        usn = input("Enter USN")
+                    elif na == "3":
+                        branch = input("Enter Branch")
+                    elif na == "4":
+                        sem = input("Enter the SEM")
+                    var = ""
+                    var = var + name + "|" + usn + "|" + branch + "|" + sem + "|"
 
-        file.write(record)
-
-    def modifyUsn(self):
-        newUsn = input("enter your usn")
-        self.usn = newUsn
-
-    def modifyName(self):
-        newName = input("enter your name")
-        self.name = newName
-
-    def modifySem(self):
-        newSem = input("enter your sem")
-        self.sem = newSem
-
-    def modifyBranch(self):
-        newBranch = input("enter your branch")
-        self.branch = newBranch
-
-
-def unpack():
-    with open("students.txt", "r") as file:
-        for line in file:
-            fields = line.strip("#\n").split("|")[:-1]
-            array.append(student(fields[0],fields[1],fields[2],fields[3]))
-
-
-def search():
-
-    got = False
-    for i in array:
-        if key == i.usn:
-            got=True
-            print("record found")
-            while True:
-                option = input(
-                    "Select The Data To Modify\n1.Usn\n2.Name\n3.Sem\n4.branch\n 5.Exit\t"
-                )
-                if option == "1":
-                    i.modifyUsn()
-                elif option == "2":
-                    i.modifyName()
-                elif option == "3":
-                    i.modifySem()
-                elif option == "4":
-                    i.modifyBranch()
-                elif option == "5":
+                    while len(var) != 30:
+                        var = var + "*"
+                    print(var)
+                    #fi.seek(pos)
+                    fi.write(var)
+                    fi.write("\n")
+                    print("Record Successfully Modified!\n")
+                    fi.close()
                     break
+            else:
+                pos = fi.tell()
+                line = fi.readline()
 
+                a = line.split("|")
+        fi.close()
 
-    if not got:
-        print("\n----Record Not Found----\n")
+s = Student()
+n = int(input("1. Enter the Student Detail 1 \n2. Unpack the File Content 2\n3. Search a Student in File\n4. Exit\n"))
 
-
-
-
-
-while True:
-    choice = input("1.Insert Student Details\n2.Search and Modify Student Details\n3.Exit\n "
-                   "Enter your choice ")
-
-
-    if choice == "1":
-        usn = input("Enter USN \t")
-        name = input("Enter Name \t")
-        sem = input("Enter Sem \t")
-        branch = input("Enter Branch \t")
-        newStudent = student(usn,name,sem,branch)
-        with open("students.txt", "a+") as file:
-            newStudent.pack(file)
-
-
-    elif choice == "2":
-        array = []
-        unpack()
-        key = input("Enter The USN search & modify\n")
-        search()
-        with open("students.txt", "w+") as file:
-            for i in array:
-                i.pack(file)
-    elif choice == "3":
-        break
-    else:
-        print ("not found")
-array = []
-
-class student:
-    def __init__(self, usn, name, sem, branch):
-        self.usn = usn
-        self.name = name
-        self.sem = sem
-        self.branch = branch
-
-
-    def pack(self,file):
-        record = self.usn+"|"+self.name+"|"+self.sem+"|"+self.branch+"|"
-
-        if len(record) > 45:
-            print("Exceeded")
-        while len(record) <46:
-            record += "#"
-        record += "\n"
-
-        file.write(record)
-
-    def modifyUsn(self):
-        newUsn = input("enter your usn")
-        self.usn = newUsn
-
-    def modifyName(self):
-        newName = input("enter your name")
-        self.name = newName
-
-    def modifySem(self):
-        newSem = input("enter your sem")
-        self.sem = newSem
-
-    def modifyBranch(self):
-        newBranch = input("enter your branch")
-        self.branch = newBranch
-
-
-def unpack():
-    with open("students.txt", "r") as file:
-        for line in file:
-            fields = line.strip("#\n").split("|")[:-1]
-            array.append(student(fields[0],fields[1],fields[2],fields[3]))
-
-
-def search():
-
-    got = False
-    for i in array:
-        if key == i.usn:
-            got=True
-            print("record found")
-            while True:
-                option = input(
-                    "Select The Data To Modify\n1.Usn\n2.Name\n3.Sem\n4.branch\n 5.Exit\t"
-                )
-                if option == "1":
-                    i.modifyUsn()
-                elif option == "2":
-                    i.modifyName()
-                elif option == "3":
-                    i.modifySem()
-                elif option == "4":
-                    i.modifyBranch()
-                elif option == "5":
-                    break
-
-
-    if not got:
-        print("\n----Record Not Found----\n")
-
-
-
-
-
-while True:
-    choice = input("1.Insert Student Details\n2.Search and Modify Student Details\n3.Exit\n "
-                   "Enter your choice ")
-
-
-    if choice == "1":
-        usn = input("Enter USN \t")
-        name = input("Enter Name \t")
-        sem = input("Enter Sem \t")
-        branch = input("Enter Branch \t")
-        newStudent = student(usn,name,sem,branch)
-        with open("students.txt", "a+") as file:
-            newStudent.pack(file)
-
-
-    elif choice == "2":
-        array = []
-        unpack()
-        key = input("Enter The USN search & modify\n")
-        search()
-        with open("students.txt", "w+") as file:
-            for i in array:
-                i.pack(file)
-    elif choice == "3":
-        break
-    else:
-        print ("not found")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+while n != 4:
+    if n == 1:
+        name = input("Enter Name")
+        usn = input("Enter USN")
+        branch = input("Enter Branch")
+        sem = input("Enter the SEM")
+        s = Student(name, usn, branch, sem)
+        s.pack()
+    if n == 2:
+        s.unpack()
+    if n == 3:
+        USNtosearch = input("Enter the USN ")
+        s.search(USNtosearch)
+    n = int(input(
+        "1. Enter the Student Detail 1 \n2. Unpack the File Content 2\n3. Search a Student in File\n4. Exit\n"))
