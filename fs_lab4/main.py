@@ -1,69 +1,109 @@
-rrn = [-1]
-cnt = 0
+class Student:
+    def __init__(self, name=None, usn=None, branch=None, sem=None):
+        self.n = name
+        self.u = usn
+        self.b = branch
+        self.s = sem
 
-class student:
-    def __init__(self, usn, name, sem):
-        self.usn = usn
-        self.name = name
-        self.sem = sem
+    def pack(self):
+        str = ""
+        str = str + self.n + "|" + self.u + "|" + self.b + "|" + self.s + "|"
+        while len(str) != 30:
+            str = str + "*"
+        f = open('record.txt', "a")
+        str+="\n"
+        f.write(str)
+        print(str)
+        f.close()
 
-    def display_data(self):
-        print(f"\nUSN -> {self.usn} \nName -> {self.name} \nSem -> {self.sem} \n")
+    def unpack(self):
+        fi = open('record.txt', "r")
+        line = fi.readline()
+        a = line.split("|")
+        while line:
+            name = a[0]
+            usn = a[1]
+            branch = a[2]
+            sem = a[3]
+            print("Name:", name)
+            print("USN:", usn)
+            print("Branch: ", branch)
+            print("SEM: ", sem)
+            line = fi.readline()
+            a = line.split("|")
+        fi.close()
 
-    def pack(self, file):
-        global cnt
-        pos = file.tell()
-        buf = self.usn + "|" + self.name + "|" + self.sem + "|"
-        buf += "\n"
-        file.write(buf)
-        cnt += 1
-        rrn.append(pos)
+    def search(self, RRN):
 
-def unpack(pos):
-    with open("record.txt", "r") as fp:
-        fp.seek(pos)
-        line = fp.readline()
-        fields = line.strip("\n").split("|")[:-1]
-        s1 = student(fields[0], fields[1], fields[2])
-        s1.display_data()
+        fi = open('record.txt', "r+")
+        pos = RRN * 31
+        print(pos)
+        fi.seek(pos)
+        line = fi.readline()
+        print(line)
 
-def find_rrn():
-    global cnt, pos, rrn
-    pos = 0
-    try:
-        with open("record.txt", "r+") as fp:
-            line = fp.readline()
-            while line:
-                rrn.append(pos)
-                pos = fp.tell()  # for returning the location of the next line
-                cnt += 1
-                line = fp.readline()
-    except:
-        pass
+        a = line.split("|")
+        if len(a)!=0:
+                name = a[0]
+                usn = a[1]
+                branch = a[2]
+                sem = a[3]
+            
+                print("Name:", name)
+                print("USN:", usn)
+                print("Branch: ", branch)
+                print("SEM: ", sem)
+                print("If You Want to Modify Enter yes ")
+                n = input()
+                if n == "yes":
+                    fi.seek(pos)
+                    na = input("Which Field Do You Want to Modify? \n1.Name\n2.USN\n3.Branch\n4.SEM\n")
+                    if na == "1":
+                        name = input("Enter Name")
+                    elif na == "2":
+                        usn = input("Enter USN")
+                    elif na == "3":
+                        branch = input("Enter Branch")
+                    elif na == "4":
+                        sem = input("Enter the SEM")
+                    var = ""
+                    var = var + name + "|" + usn + "|" + branch + "|" + sem + "|"
 
-find_rrn()
-while True:
-    choice = input(
-        "\n1.Insert a record\n2.Search for a record using RRN\n3.Exit\nEnter your choice ==>\t"
-    )
-    if choice == "1":
-        usn = input("Enter USN \t")
-        name = input("Enter name \t")
-        sem = input("Enter sem \t")
-        new_student = student(usn, name, sem)
-        with open("record.txt", "a+") as fp:
-            new_student.pack(fp)
-    elif choice == "3":
-        break
-    elif choice == "2":
-        print(cnt)
-        rrn_search = int(input("Enter the RRN to be found \t"))
-        if rrn_search > cnt or rrn_search < 0:
-            print("Invalid RRN Entered!")
-            continue
-        print("RRN Record Found")
-        pos = rrn[rrn_search]
-        with open("record.txt", "r") as fp:
-            unpack(pos)
-    else:
-        print("Invalid Input")
+                    while len(var) != 30:
+                        var = var + "*"
+                    print(var)
+                    #fi.seek(pos)
+                    fi.write(var)
+                    fi.write("\n")
+                    print("Record Successfully Modified!\n")
+                    fi.close()
+                    return
+                
+                else:
+                    fi.close()
+                    return
+                    
+        else:
+                print("Record (RRN) Not Found\n")
+                fi.close()
+                return
+            
+s = Student()
+n = int(input("1. Enter the Student Detail 1 \n2. Unpack the File Content 2\n3. Search a Student in File\n4. Exit\n"))
+
+while n != 4:
+    if n == 1:
+        name = input("Enter Name")
+        usn = input("Enter USN")
+        branch = input("Enter Branch")
+        sem = input("Enter the SEM")
+        s = Student(name, usn, branch, sem)
+        s.pack()
+    if n == 2:
+        s.unpack()
+    if n == 3:
+        RRN = int(input("Enter the RRN "))
+        s.search(RRN)
+    n = int(input(
+        "1. Enter the Student Detail 1 \n2. Unpack the File Content 2\n3. Search a Student in File\n4. Exit\n"))
+
